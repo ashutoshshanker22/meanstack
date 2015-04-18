@@ -17,7 +17,7 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 				templateUrl: 'modules/customers/views/create-customer.client.view.html',
 				controller: function ($scope, $modalInstance){
 					$scope.ok = function () {
-						if ($scope.createCustomerForm.$valid) {
+						if (this.createCustomerForm.$valid) {
 							$modalInstance.close();
 						}
 					};
@@ -27,7 +27,6 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 					};
 				},
 				size: size,
-
 			});
 
 			modalInstance.result.then(function (selectedItem) {
@@ -47,7 +46,7 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 					$scope.customer = customer;
 
 					$scope.ok = function () {
-						if ($scope.updateCustomerForm.$valid) {
+						if (this.updateCustomerForm.$valid) {
 							$modalInstance.close($scope.customer);
 						}
 					};
@@ -69,6 +68,23 @@ customersApp.controller('CustomersController', ['$scope', '$stateParams', 'Authe
 			}, function () {
 				$log.info('Modal dismissed at: ' + new Date());
 			});
+		};
+
+
+		// Remove existing Customer
+		this.remove = function(customer) {
+			if ( customer ) {
+				customer.$remove();
+
+				for (var i in this.customers) {
+					if (this.customers [i] === customer) {
+						this.customers.splice(i, 1);
+					}
+				}
+			} else {
+				this.customer.$remove(function() {
+				});
+			}
 		};
 	}
 ]);
@@ -160,24 +176,5 @@ customersApp.directive('customerList', function(){
 			}
 		};
 
-		// Update existing Customer
-		$scope.update = function() {
-			var customer = $scope.customer;
-
-			customer.$update(function() {
-				$location.path('customers/' + customer._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-
-
-		// Find existing Customer
-		$scope.findOne = function() {
-			$scope.customer = Customers.get({
-				customerId: $stateParams.customerId
-			});
-		};
 
 */
